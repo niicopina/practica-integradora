@@ -2,7 +2,7 @@ import {model, Schema } from 'mongoose'
 
 let collection = 'movies'
 let schema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, unique: true },
     capacity: { type: Number, required: true },
     price: { type: Number, required: true }
 })
