@@ -1,5 +1,6 @@
 import express from 'express'
 import 'dotenv/config.js'
+import router from './router/index.js'
 import errorHandler from './middlewares/errorHandler.js'
 import notFoundHandler from './middlewares/notFoundHandler.js'
 
@@ -11,7 +12,7 @@ server.use(express.json())
 server.use(express.urlencoded({extended: true}))
 
 //
-//server.use('/api', index_router)
+server.use('/api', router)
 server.use(errorHandler)
 server.use(notFoundHandler)
 
