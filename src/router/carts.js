@@ -5,6 +5,7 @@ import User from "../models/User.js";
 
 let carts_router = Router()
 
+//se crea una cart nueva
 carts_router.post(
     '/',
     async(req,res,next)=> {
@@ -29,6 +30,7 @@ carts_router.post(
         }
     }
 )
+//se añade pelicula nueva dentro de la cart ya creada
 carts_router.post(
     '/:cartId/addMovie/:movieId',
     async(req,res,next)=>{
