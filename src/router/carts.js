@@ -57,6 +57,29 @@ carts_router.post(
     }
 )
 carts_router.get(
+    '/',
+    async(req,res,next)=>{
+        try {
+            const cart = await Cart.find().select('user_id movie_id -_id')
+                .populate('user_id', 'name -_id')
+                .populate('movie_id', 'title -_id')
+            if(cart){
+                return res.status(200).json({
+                    success: true,
+                    data: cart
+                })
+            }else{
+                return res.status(404).json({
+                    success: false,
+                    message: 'not found'
+                })
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
+)
+carts_router.get(
     '/:id',
     async(req,res,next)=>{
         try {
