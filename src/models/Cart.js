@@ -3,7 +3,7 @@ import { model, Schema, Types } from 'mongoose'
 let collection = 'carts'
 
 let schema = new Schema({
-    user_id:  { type: Types.ObjectId, required: true, ref: 'users' },
+    user_id:  { type: Types.ObjectId, required: true, ref: 'users', index: true },
     movie_id: { type: Types.ObjectId, required: true, ref: 'movies' },
     quantity: { type: Number, required: true}
 })

@@ -102,6 +102,20 @@ carts_router.get(
     }
 )
 carts_router.put(
+    '/users/:uid',
+    async(req,res,next)=>{
+        try {
+            const uid = req.params.uid
+            const all = await Cart.updateMany({ user_id:uid}, {active:false})
+            return res.status(200).json({
+                success: true
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+)
+carts_router.put(
     '/:id',
     async(req,res,next)=>{
         try {
