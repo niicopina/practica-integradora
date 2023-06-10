@@ -116,23 +116,19 @@ carts_router.put(
     }
 )
 carts_router.put(
-    '/:id',
+    '/:cid',
     async(req,res,next)=>{
         try {
-            const cartId = req.params.id
-            const newMovieId = req.body.id
-            const cart = await Cart.findById(cartId)
-            if(!cart){
-                return res.status(404).json({
-                    success: false,
-                    message: 'not found'
-                })
-            }
-            cart.movie_id = newMovieId
-            await cart.save()
+            const cid = req.params.cid
+            const data = req.body
+            const cart = await Cart.findByIdAndUpdate(
+                cid, //id del doc a modificar
+                data, //objeto con las modificaciones a realizar
+                {new: true}    
+            ).populate('user_id', 'name -_id')
             return res.status(200).json({
-                success: true,
-                data: cart
+                succes: true,
+                response: cart
             })
         } catch (error) {
             next(error)
@@ -140,10 +136,11 @@ carts_router.put(
     }
 )
 carts_router.delete(
-    '/:id',
+    '/:cid',
     async(req,res,next)=> {
         try {
-            const cart = await Cart.findByIdAndDelete(req.params.id)
+            const cid = req.params.cid
+            const cart = await Cart.deleteOne({_id:cid})
             if(cart){
                 return res.status(200).json({
                     success: true,
