@@ -107,9 +107,16 @@ carts_router.put(
         try {
             const uid = req.params.uid
             const all = await Cart.updateMany({ user_id:uid}, {active:false})
-            return res.status(200).json({
-                success: true
-            })
+            if(all){
+                return res.status(200).json({
+                    success: true
+                })
+            }else{
+                return res.status(404).json({
+                    success: false,
+                    message: 'not found'
+                })
+            }
         } catch (error) {
             next(error)
         }

@@ -5,7 +5,8 @@ let collection = 'carts'
 let schema = new Schema({
     user_id:  { type: Types.ObjectId, required: true, ref: 'users', index: true },
     movie_id: { type: Types.ObjectId, required: true, ref: 'movies' },
-    quantity: { type: Number, required: true}
+    quantity: { type: Number, required: true},
+    active:   { type: Boolean}
 })
 
 let Cart = model(collection, schema)
