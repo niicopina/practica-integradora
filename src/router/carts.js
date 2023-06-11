@@ -2,6 +2,7 @@ import { Router } from "express";
 import Cart from "../models/Cart.js";
 import Movie from "../models/Movie.js";
 import User from "../models/User.js";
+import { Types } from "mongoose";
 
 let carts_router = Router()
 
@@ -89,6 +90,47 @@ carts_router.get(
                 return res.status(200).json({
                     success: true,
                     data: cart
+                })
+            }else{
+                return res.status(404).json({
+                    success: false,
+                    message: 'not found'
+                })
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
+)
+carts_router.get(
+    '/bills/:uid',
+    async(req,res,next)=>{
+        try {
+            let data = await Cart.aggregate([
+                {$match: {user_id: new Types.ObjectId(req.params.uid)}},//filtro x cart x users
+                {$lookup: {
+                    foreignField:'_id', from:'users',
+                    localField:'user_id', as:'user_id'
+                }}, //populate datos del user
+                {$lookup: {
+                    foreignField:'_id', from:'movies',
+                    localField:'movie_id', as:'movie_id'
+                }},
+                {$replaceRoot: {
+                    newRoot:{ //reemplazo la ubicacion de los elementos del array populado
+                        $mergeObjects: [{$arrayElemAt: ['$movie_id',0]},'$$ROOT']
+                    }
+                }},
+                {$set: {total: {$multiply: ['$quantity', '$price']}}},//multiplica precio * cantidad
+                {$project: {movie_id:0, quantity:0, price:0,capacity:0,__v:0, active:0}},//limpia objeto
+                {$group:{_id:'$user_id', sum:{$sum:'$total'}}},//agrupo y reduzco
+                {$project:{_id:0, user_id:'$_id', sum:'$sum'}},
+                {$merge:{into:'bills'}}
+            ])
+            if(data){
+                return res.status(200).json({
+                    success: true,
+                    response: data
                 })
             }else{
                 return res.status(404).json({
