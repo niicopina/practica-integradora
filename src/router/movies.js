@@ -20,8 +20,17 @@ movies_router.post(
 movies_router.get(
     '/',
     async(req,res,next) => {
+        let page = 1
+        if(req.query.page){ page = req.query.page }
+        let limit = 10
+        if(req.query.limit){ limit = req.query.limit}
+        let title = req.query.title ? new RegExp(req.query.title, 'i') : ''
         try {
-            let all = await Movie.find()
+            let all = await Movie.paginate(
+                {title},
+                {limit, page}
+                )
+
             if(all){
                 return res.status(200).json({
                     success: true,
